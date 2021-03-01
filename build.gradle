@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group 'com.taptap'
+version '1.0'
+logger.lifecycle('Build version: {}', version)
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    compile ('com.github.houbb:segment:0.1.8'){
+        exclude(module:'segment-data-pos-core')
+        exclude(module:'segment-data-phrase-core')
+    }
+    compile('com.github.houbb:segment-data-phrase-api:0.0.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'io.undertow:undertow-core:2.1.0.Final'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            pom {
+                name = 'pinyin-plus'
+                description = '汉字转拼音'
+                developers {
+                    developer {
+                        id = 'kl'
+                        url = 'http://www.kailing.pub'
+                        email = 'g632104866@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name 'sonatypeRepository'
+            url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            credentials {
+                username = System.getenv('GITHUB_NEXUS_USERNAME')
+                password = System.getenv('GITHUB_NEXUS_PASSWORD')
+            }
+        }
+    }
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    from sourceSets.main.allSource
+}
