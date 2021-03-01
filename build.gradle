@@ -44,6 +44,7 @@ publishing {
             }
         }
     }
+    //等待审核 https://issues.sonatype.org/browse/OSSRH-65178
     repositories {
         maven {
             name 'sonatypeRepository'
