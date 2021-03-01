@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.taptap'
+group 'com.github.taptap'
 version '1.0'
 logger.lifecycle('Build version: {}', version)
 
