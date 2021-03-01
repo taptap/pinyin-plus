@@ -39,12 +39,12 @@ Transfer/sec:     17.67MB
 ### 添加依赖
 grlade
 ```groovy
-compile "com.taptap:pinyin-plus:1.0"
+compile "com.github.taptap:pinyin-plus:1.0"
 ```
 maven
 ```
         <dependency>
-            <groupId>com.taptap</groupId>
+            <groupId>com.github.taptap</groupId>
             <artifactId>pinyin-plus</artifactId>
             <version>1.0</version>
         </dependency>
