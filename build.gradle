@@ -1,7 +1,9 @@
 plugins {
     id 'java'
-    id 'maven-publish'
 }
+
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 group 'com.github.taptap'
 version '1.0'
@@ -27,13 +29,58 @@ test {
     useJUnitPlatform()
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            pom {
-                name = 'pinyin-plus'
-                description = '汉字转拼音'
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+
+            pom.project {
+                name 'pinyin-plus'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description '汉字转拼音'
+                url 'https://github.com/TapTap/pinyin-plus'
+
+                scm {
+                    connection 'scm:git:https://github.com/TapTap/pinyin-plus.git'
+                    developerConnection 'scm:git:https://github.com/TapTap/pinyin-plus.git'
+                    url 'https://github.com/TapTap/pinyin-plus'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
                 developers {
                     developer {
                         id = 'kl'
@@ -44,19 +91,4 @@ publishing {
             }
         }
     }
-    //等待审核 https://issues.sonatype.org/browse/OSSRH-65178
-    repositories {
-        maven {
-            name 'sonatypeRepository'
-            url 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
-            credentials {
-                username = System.getenv('GITHUB_NEXUS_USERNAME')
-                password = System.getenv('GITHUB_NEXUS_PASSWORD')
-            }
-        }
-    }
-}
-
-task sourceJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
 }
