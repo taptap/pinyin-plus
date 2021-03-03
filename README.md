@@ -37,12 +37,12 @@ Transfer/sec:     17.67MB
 ```
 
 ### 添加依赖
-grlade
+gradle
 ```groovy
 compile "com.github.taptap:pinyin-plus:1.0"
 ```
 maven
-```
+```xml
         <dependency>
             <groupId>com.github.taptap</groupId>
             <artifactId>pinyin-plus</artifactId>
